@@ -72,9 +72,10 @@ func InitToConsole(level Level) {
 }
 
 //InitToWriter initialize the loggers for all levels with "w" io.Writer
-func InitToWriter(level Level,w io.Writer) {
+func InitToWriter(level Level, w io.Writer) {
 	InitLoggers(level, w, w, w, w, w)
 }
+
 //InitEmpty initialize the loggers for all levels with a output to ioutil.Discard.
 //This default.
 func InitEmpty() {
@@ -83,6 +84,7 @@ func InitEmpty() {
 
 func init() {
 	InitEmpty()
+	Error = mustLevel(LevelError, os.Stderr, log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 //String is Stringer
