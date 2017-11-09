@@ -21,13 +21,22 @@ type Log struct {
 
 //Pre Defined levels log
 const (
-	LevelNone  = Level(0)
-	LevelInfo  = Level(1)
-	LevelWarn  = Level(2)
-	LevelError = Level(3)
-	LevelDebug = Level(4)
-	LevelTrace = Level(5)
+	LevelNone = Level(iota)
+	LevelInfo
+	LevelWarn
+	LevelError
+	LevelDebug
+	LevelTrace
 )
+
+var names = map[Level]string{
+	LevelNone:  "None",
+	LevelInfo:  "Info",
+	LevelWarn:  "Warn",
+	LevelError: "Error",
+	LevelDebug: "Debug",
+	LevelTrace: "Trace",
+}
 
 //Concrete loggers by level
 var (
@@ -94,22 +103,10 @@ func (l Log) String() string {
 
 //Name returns name for pre defined levels
 func (level Level) Name() string {
-	switch level {
-	case LevelNone:
-		return "None"
-	case LevelInfo:
-		return "Info"
-	case LevelWarn:
-		return "Warn"
-	case LevelError:
-		return "Error"
-	case LevelDebug:
-		return "Debug"
-	case LevelTrace:
-		return "Trace"
-	default:
-		return "unknow"
+	if name, exists := names[level]; exists {
+		return name
 	}
+	return ""
 }
 
 //mustLevel returns logger by level
