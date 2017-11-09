@@ -68,11 +68,11 @@ func InitLoggers(level Level, wInfo, wWarn, wError, wDebug, wTrace io.Writer) {
 	}
 
 	formatFlag := log.Ldate | log.Ltime | log.Lshortfile
-	Info = mustLevel(LevelInfo, wInfo, formatFlag)
-	Warn = mustLevel(LevelWarn, wWarn, formatFlag)
-	Error = mustLevel(LevelError, wError, formatFlag)
-	Debug = mustLevel(LevelDebug, wDebug, formatFlag)
-	Trace = mustLevel(LevelTrace, wTrace, formatFlag)
+	Info = newLogger(LevelInfo, wInfo, formatFlag)
+	Warn = newLogger(LevelWarn, wWarn, formatFlag)
+	Error = newLogger(LevelError, wError, formatFlag)
+	Debug = newLogger(LevelDebug, wDebug, formatFlag)
+	Trace = newLogger(LevelTrace, wTrace, formatFlag)
 }
 
 //InitToConsole initialize the loggers for all levels with a output to console
@@ -93,7 +93,7 @@ func InitEmpty() {
 
 func init() {
 	InitEmpty()
-	Error = mustLevel(LevelError, os.Stderr, log.Ldate|log.Ltime|log.Lshortfile)
+	Error = newLogger(LevelError, os.Stderr, log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 //String is Stringer
@@ -109,12 +109,8 @@ func (level Level) Name() string {
 	return ""
 }
 
-//mustLevel returns logger by level
-func mustLevel(level Level, w io.Writer, flag int) *Log {
-	namelevel := level.Name()
-	if namelevel == "unknow" {
-		panic(fmt.Errorf("Unknow level: %d", level))
-	}
-	lgr := log.New(w, strings.ToUpper(namelevel)+":", flag)
-	return &Log{lgr, level, namelevel}
+//newLogger returns logger by level
+func newLogger(level Level, w io.Writer, flag int) *Log {
+	lgr := log.New(w, strings.ToUpper(level.Name())+":", flag)
+	return &Log{lgr, level, level.Name()}
 }
